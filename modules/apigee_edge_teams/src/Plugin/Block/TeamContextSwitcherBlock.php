@@ -157,7 +157,7 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
       $teams = $this->team_membership_manager->getTeams($this->current_user->getEmail());
 
       foreach ($teams as $team) {
-        if ($current_route_entity instanceof TeamInterface && $team !== $current_route_entity->id()) {
+        if (!$current_route_entity instanceof TeamInterface || $team !== $current_route_entity->id()) {
           $build['#links'][$team] = [
             'title' => $team,
             'url' => Url::fromRoute($team_route, ['team' => $team]),
