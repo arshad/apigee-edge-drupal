@@ -20,6 +20,7 @@
 
 namespace Drupal\apigee_edge_teams\Routing;
 
+use Drupal\apigee_edge_teams\TeamContextManagerInterface;
 use Drupal\Component\Utility\NestedArray;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Symfony\Component\Routing\RouteCollection;
@@ -50,6 +51,14 @@ final class TeamAppByNameRouteAlterSubscriber extends RouteSubscriberBase {
         NestedArray::setValue($params, ['team', 'type'], 'entity:team');
         NestedArray::setValue($params, ['app', 'type'], 'team_app_by_name');
         $route->setOption('parameters', $params);
+      }
+      // Add the team route ID to any developer (user) routes as corresponding
+      // to a team route. We add the team route to the developer route to take
+      // advantage of route caching.
+      if (($developer_route_id = $route->getOption(TeamContextManagerInterface::DEVELOPER_ROUTE_OPTION_NAME))
+        && ($developer_route = $collection->get($developer_route_id))
+      ) {
+        $developer_route->setOption(TeamContextManagerInterface::TEAM_ROUTE_OPTION_NAME, $id);
       }
     }
   }
