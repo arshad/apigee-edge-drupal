@@ -49,7 +49,7 @@ class TeamContextManager implements TeamContextManagerInterface {
   /**
    * {@inheritdoc}
    */
-  public function correspondingRouteId() {
+  public function correspondingRouteName() {
     // Get the current route object.
     if ($current_route_object = $this->current_route_match->getRouteObject()) {
       // The corresponding team, developer route or null.

@@ -32,11 +32,11 @@ interface TeamContextManagerInterface {
   const TEAM_ROUTE_OPTION_NAME = '_apigee_team_route';
 
   /**
-   * Gets the corresponding route id for the current route.
+   * Gets the name for the route that corresponds to the current route.
    *
    * @return null|string
-   *   The corresponding route ID if one is detected.
+   *   The corresponding route name if one is detected.
    */
-  public function correspondingRouteId();
+  public function correspondingRouteName();
 
 }
