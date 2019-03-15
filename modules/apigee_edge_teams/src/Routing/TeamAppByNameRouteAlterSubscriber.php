@@ -57,6 +57,7 @@ final class TeamAppByNameRouteAlterSubscriber extends RouteSubscriberBase {
       // advantage of route caching.
       if (($developer_route_id = $route->getOption(TeamContextManagerInterface::DEVELOPER_ROUTE_OPTION_NAME))
         && ($developer_route = $collection->get($developer_route_id))
+        && empty($developer_route->getOption(TeamContextManagerInterface::TEAM_ROUTE_OPTION_NAME))
       ) {
         $developer_route->setOption(TeamContextManagerInterface::TEAM_ROUTE_OPTION_NAME, $id);
       }
