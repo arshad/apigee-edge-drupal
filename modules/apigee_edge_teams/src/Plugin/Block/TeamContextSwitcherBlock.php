@@ -148,10 +148,13 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
         ];
         // Get all route parameters except the team.
         $parameters = ['user' => $this->current_user->id()] + array_diff_key($current_route_parameters, ['team' => NULL]);
-        $build['#links']['current_developer'] = [
-          'title' => $this->current_user->getDisplayName(),
-          'url' => Url::fromRoute($user_route, $parameters),
-        ];
+        $url = Url::fromRoute($user_route, $parameters);
+        if ($url->access($this->current_user)) {
+          $build['#links']['current_developer'] = [
+            'title' => $this->current_user->getDisplayName(),
+            'url' => $url,
+          ];
+        }
       }
       $build['#links']['teams'] = [
         'title' => t('Teams:'),
@@ -164,10 +167,13 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
         if (!$current_route_entity instanceof TeamInterface || $team !== $current_route_entity->id()) {
           // Get all route parameters except the current user.
           $parameters = ['team' => $team] + array_diff_key($current_route_parameters, ['user' => NULL]);
-          $build['#links'][$team] = [
-            'title' => $team,
-            'url' => Url::fromRoute($team_route, (array) $parameters),
-          ];
+          $url = Url::fromRoute($team_route, (array) $parameters);
+          if ($url->access($this->current_user)) {
+            $build['#links'][$team] = [
+              'title' => $team,
+              'url' => $url,
+            ];
+          }
         }
       }
     }
