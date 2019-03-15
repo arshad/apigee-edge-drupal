@@ -128,6 +128,8 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
       $team_route = $current_route_entity_type === 'team' ? $current_route_name : $corresponding_route_name;
       $user_route = $current_route_entity_type === 'user' ? $current_route_name : $corresponding_route_name;
       $current_route_entity = $this->current_route_match->getParameter($current_route_entity_type);
+      $current_route_parameters = $this->current_route_match->getRawParameters()->all();
+
       $build = [
         '#type' => 'dropbutton',
         '#attributes' => ['class' => ['apigee-team-context-selector']],
@@ -144,9 +146,11 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
           'title' => t('Developers:'),
           'attributes' => ['class' => ['apigee-team-context-group-label']],
         ];
+        // Get all route parameters except the team.
+        $parameters = ['user' => $this->current_user->id()] + array_diff_key($current_route_parameters, ['team' => NULL]);
         $build['#links']['current_developer'] = [
           'title' => $this->current_user->getDisplayName(),
-          'url' => Url::fromRoute($user_route, ['user' => $this->current_user->id()]),
+          'url' => Url::fromRoute($user_route, $parameters),
         ];
       }
       $build['#links']['teams'] = [
@@ -158,12 +162,13 @@ class TeamContextSwitcherBlock extends BlockBase implements ContainerFactoryPlug
 
       foreach ($teams as $team) {
         if (!$current_route_entity instanceof TeamInterface || $team !== $current_route_entity->id()) {
+          // Get all route parameters except the current user.
+          $parameters = ['team' => $team] + array_diff_key($current_route_parameters, ['user' => NULL]);
           $build['#links'][$team] = [
             'title' => $team,
-            'url' => Url::fromRoute($team_route, ['team' => $team]),
+            'url' => Url::fromRoute($team_route, (array) $parameters),
           ];
         }
-
       }
     }
 
